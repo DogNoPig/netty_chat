@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线聊天汇</title>
+</head>
+<body>
+    <input type="text" id="message">
+    <input type="button" value="发送消息" onclick="sendMessage()">
+
+    <p style="background-color: #AAAAAA" id="server_message"></p>
+
+    <script>
+
+        let websocket = null;
+        // 判断浏览器是否支持ws
+        if (window.WebSocket){
+            websocket = new WebSocket("ws://127.0.0.1:9090/ws");
+
+            websocket.onopen = function () {
+                console.log("开始建立连接。。。");
+            }
+
+            websocket.onclose = function () {
+                console.log("开始关闭连接。。。");
+            }
+
+            websocket.onmessage = function (e) {
+                console.log("接收到服务器的消息："+e.data);
+                var p = document.getElementById("server_message");
+                p.innerHTML += e.data + "<br/>";
+            }
+
+        }
+        else {
+            alert("当前浏览器不支持WebSocket");
+        }
+        
+        function sendMessage() {
+            var message = document.getElementById("message");
+            websocket.send(message.value);
+        }
+    </script>
+</body>
+</html>
